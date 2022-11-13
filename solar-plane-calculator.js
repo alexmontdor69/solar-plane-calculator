@@ -1,6 +1,6 @@
 
 import convexHull from 'convex-hull';
-import { transpose, multiply} from 'matrix-lib-js'
+import {transpose, multiply} from 'matrix-lib-js'
 
 
 class SolarPlaneCalculator {
