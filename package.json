@@ -14,5 +14,8 @@
     "calcul"
   ],
   "author": "Alex LANDREAU",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "convex-hull": "^1.0.3"
+  }
 }
