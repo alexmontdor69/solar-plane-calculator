@@ -1,6 +1,6 @@
 {
   "name": "solar-plane-calculator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Calculator of planes orthogonal to sun beams",
   "main": "solar-plane-calculator.js",
   "scripts": {

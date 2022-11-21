@@ -76,3 +76,7 @@ __the Class methods__
 - setSunAzimuth : Set the azimuth angle (radian) of the sun
 - setElevation : Set the elevation angle (radian) of the sun
 - getRefModelShape : Get a scaled X-Y plane shape
+
+__v1.0.3__
+- getRefModel return the z dimension
+- no console.log()
