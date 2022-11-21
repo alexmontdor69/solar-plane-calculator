@@ -24,14 +24,9 @@ class SolarPlaneCalculator {
     }
 
     init(){
-        console.log (`Init Model`)
+        //console.log (`Init Model`)
         this.initSegment=this.model.segments
         this.initModel=this.model.points
-        this.objConfig={
-            width:this.model.width,
-            depth:this.model.depth,
-            height:this.model.height,
-        }
 
         this.translationVector=[
             this.model.x0||0,
@@ -39,17 +34,16 @@ class SolarPlaneCalculator {
             this.model.z0||0 
         ]
 
-        console.log (`Create a reference ${this.initModel.length} points Model to dimension W, D, P`, 
-            this.objConfig.width,
-            this.objConfig.depth, 
-            this.objConfig.height, this.translationVector)
+        /* console.log (`Create a reference ${this.initModel.length} points Model to dimension W, D, P`, 
+            this.model.width,
+            this.model.depth, 
+            this.model.height) */
 
-        
             this.rotateModel() // =>this.refModel
     }
 
     rotateModel (){
-        console.log ('.. Adjust Object Position')
+        //console.log ('.. Adjust Object Position')
         const cosOAz=Math.cos(this.objAzimuth)
         const sinOAz=Math.sin(this.objAzimuth)
 
@@ -68,12 +62,9 @@ class SolarPlaneCalculator {
             [0,0,0,1]]
 
         const matrix = multiply(ZObj,T)
-        console.log ("initModel",this.initModel)
+        // console.log ("initModel",this.initModel)
         this.refModel = this.initModel
                             .map(point=>({ 
-/*                                             x:point.x*this.objConfig.depth, 
-                                            y:-point.y*this.objConfig.width, 
-                                            z:point.z*this.objConfig.height */
                                             x:point.x, 
                                             y:-point.y, 
                                             z:point.z
@@ -83,7 +74,7 @@ class SolarPlaneCalculator {
     }
 
     buildRotationMatrix (){
-        console.log ('.. Adjust Solar Plane in function of sun azimuth and elevation')
+        // console.log ('.. Adjust Solar Plane in function of sun azimuth and elevation')
 
         const cosSAz=Math.cos(this.sunAzimuth)
         const sinSAz=Math.sin(this.sunAzimuth)
@@ -132,39 +123,39 @@ class SolarPlaneCalculator {
 // __________________________________________________________________________________________________________
 
     getPoints () {
-        console.log (`Display ${this.transformedPoints.length} Points`)
+        // console.log (`Display ${this.transformedPoints.length} Points`)
         return this.transformedPoints
     }
 
     getPeripheralPointIndexes (){
         if (this.transformedPoints.length ==0){
-                console.log ('No transformed Points detected')
+                // console.log ('No transformed Points detected')
                 return []
         }
         const zone = this.findPeripheralZone(this.transformedPoints)
         // console.log ("zone", zone)
         const pointIndexes=  [... new Set(zone.join().split(','))]
         // console.log (pointIndexes)
-        console.log (`... Detect ${pointIndexes.length} peripheral points (orange)`)
+        // console.log (`... Detect ${pointIndexes.length} peripheral points (orange)`)
         return pointIndexes
     }
 
     setObjAzimuth (angle){
-        console.log (`Set Object Azimuth`)
+        // console.log (`Set Object Azimuth`)
         this.objAzimuth = angle
         this.rotateModel ()
         this.transformModel()
     }
 
     setSunAzimuth (angle){
-        console.log (`Set Sun Azimuth`)
+        // console.log (`Set Sun Azimuth`)
         this.sunAzimuth = angle
         this.rotationMatrix=this.buildRotationMatrix ()
         this.transformModel()
     }
 
     setElevation(angle){
-        console.log (`Set Sun Elevation`)       
+        // console.log (`Set Sun Elevation`)       
         this.elevation = angle
         this.rotationMatrix=this.buildRotationMatrix ()
         this.transformModel()
@@ -172,7 +163,7 @@ class SolarPlaneCalculator {
 
     getSegments = (model=this.transformedPoints)=>{
         let segments = this.initSegment.map((points)=>([model[points[0]],model[points[1]]]))  
-        console.log (`Display ${segments.length} Segments`)
+        /  console.log (`Display ${segments.length} Segments`)
         return segments
     }
 
