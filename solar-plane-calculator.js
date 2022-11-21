@@ -1,14 +1,15 @@
-
-import convexHull from 'convex-hull';
-import {transpose, multiply} from 'matrix-lib-js'
-
+'use strict'
+//import {convexHull} from 'convex-hull'
+//import {transpose, multiply} from 'matrix-lib-js'
+const ch= require ('convex-hull')
+const { transpose, multiply } = require ('matrix-lib-js')
 
 class SolarPlaneCalculator {
 
     constructor (model, objAzimuth, sunAzimuth, elevation){
         this.model = model
         this.sunAzimuth = sunAzimuth
-        this.objAzimuth = objAzimuth
+        this.objAzimuth = objAzimuth||0
         this.elevation = elevation
         this.initSegment =[]
         this.initModel =[]
@@ -17,6 +18,7 @@ class SolarPlaneCalculator {
         this.init()
 
         this.rotationMatrix=this.buildRotationMatrix()
+        //console.log ('rotation Mat', this.rotationMatrix)
         this.transformedPoints=[]
         this.transformModel()
     }
@@ -30,14 +32,18 @@ class SolarPlaneCalculator {
             depth:this.model.depth,
             height:this.model.height,
         }
+
         this.translationVector=[
             this.model.x0||0,
             this.model.y0||0,
-            this.model.z0||0 ]
+            this.model.z0||0 
+        ]
+
         console.log (`Create a reference ${this.initModel.length} points Model to dimension W, D, P`, 
             this.objConfig.width,
             this.objConfig.depth, 
-            this.objConfig.height)
+            this.objConfig.height, this.translationVector)
+
         
             this.rotateModel() // =>this.refModel
     }
@@ -62,12 +68,15 @@ class SolarPlaneCalculator {
             [0,0,0,1]]
 
         const matrix = multiply(ZObj,T)
-
+        console.log ("initModel",this.initModel)
         this.refModel = this.initModel
                             .map(point=>({ 
-                                            x:point.x*this.objConfig.width, 
-                                            y:-point.y*this.objConfig.depth, 
-                                            z:point.z*this.objConfig.height
+/*                                             x:point.x*this.objConfig.depth, 
+                                            y:-point.y*this.objConfig.width, 
+                                            z:point.z*this.objConfig.height */
+                                            x:point.x, 
+                                            y:-point.y, 
+                                            z:point.z
                                         }))
                             .map(point=>([[point.x],[point.y],[point.z],[1]])) // refModel being an array of points vector 3x1
                             .map(point=>multiply(matrix,point))
@@ -94,7 +103,7 @@ class SolarPlaneCalculator {
             [0,cosEl,-sinEl,0],
             [0,sinEl,cosEl,0],
             [0,0,0,1]]; 
-
+            
         const ZAzT=transpose(ZAz)
         const XT=transpose(X)
 
@@ -110,17 +119,15 @@ class SolarPlaneCalculator {
     
     findPeripheralZone= (model)=>{
         let pointsCluster = this.formatZone(model)
-        const peripheralZone=convexHull(pointsCluster)
+        // console.log ("pointsCluster",pointsCluster)
+        const peripheralZone=ch(pointsCluster)
+        // console.log ("peripheralZone",peripheralZone)
         return peripheralZone        
     }
 
     transformModel (){
-        this.transformedPoints = this.refModel.map(point=>multiply(this.rotationMatrix, point)).map((point)=>({x:point[0][0], y:point[1][0], z:point[2][0]}))
+        this.transformedPoints = this.refModel.map(point=>multiply(this.rotationMatrix, point)).map((point,index)=>({x:point[0][0], y:point[1][0], z:point[2][0], label:this.initModel[index].label}))
     }
-
-
-
-
     
 // __________________________________________________________________________________________________________
 
@@ -130,13 +137,16 @@ class SolarPlaneCalculator {
     }
 
     getPeripheralPointIndexes (){
-        if (this.transformedPoints.length ==0)
-            return []
+        if (this.transformedPoints.length ==0){
+                console.log ('No transformed Points detected')
+                return []
+        }
         const zone = this.findPeripheralZone(this.transformedPoints)
+        // console.log ("zone", zone)
         const pointIndexes=  [... new Set(zone.join().split(','))]
+        // console.log (pointIndexes)
         console.log (`... Detect ${pointIndexes.length} peripheral points (orange)`)
         return pointIndexes
-        
     }
 
     setObjAzimuth (angle){
@@ -159,6 +169,7 @@ class SolarPlaneCalculator {
         this.rotationMatrix=this.buildRotationMatrix ()
         this.transformModel()
     }
+
     getSegments = (model=this.transformedPoints)=>{
         let segments = this.initSegment.map((points)=>([model[points[0]],model[points[1]]]))  
         console.log (`Display ${segments.length} Segments`)
@@ -168,7 +179,12 @@ class SolarPlaneCalculator {
     getRefModel =(unit)=>{
         const max = Math.max(this.model.width, this.model.depth)
         const ratio = unit/max
-        return this.refModel.map(point=>({x:point[0][0]*ratio,y:point[1][0]*ratio}))
+        //console.log (max,this.model.width, this.model.depth,unit, ratio, this.refModel)
+        return this.refModel.map(point=>({
+                                            x:point[0][0]*ratio,
+                                            y:point[1][0]*ratio,
+                                            z:point[2][0]*ratio
+                                        }))
     }
 
     getRefModelShape =(scale)=>{
@@ -177,4 +193,5 @@ class SolarPlaneCalculator {
         
     }
 }
-export default SolarPlaneCalculator;
+
+module.exports = SolarPlaneCalculator
