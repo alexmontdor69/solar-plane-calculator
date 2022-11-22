@@ -168,7 +168,6 @@ class SolarPlaneCalculator {
     }
 
     getSegments = (model=this.transformedPoints)=>{
-        describe.todo('get Segments')
 
         let segments = this.initSegment.map((points)=>([model[points[0]],model[points[1]]]))  
         //  console.log (`Display ${segments.length} Segments`)

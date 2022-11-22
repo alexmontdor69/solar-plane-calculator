@@ -80,6 +80,9 @@ __the Class methods__
 - getRefModelShapeByUnit : Get a scaled X-Y plane shape to a unit (max depth or width)
 - getRefModelShapeByRatio :  Get a scaled X-Y plane shape by a ratio (1 give the Ref Model reformated)
 
+__v1.0.4__
+. remove describe
+
 __v1.0.3__
 - getRefModel return the z dimension
 - no console.log()
