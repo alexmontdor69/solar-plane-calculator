@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "convex-hull": "^1.0.3",
-    "matrix-lib-js": "git@github.com:alexmontdor69/matrix-lib-js.git#v0.0.1"
+    "matrix-lib-js": "git@github.com:alexmontdor69/matrix-lib-js.git#v0.0.2"
   },
   "devDependencies": {
     "jest": "^29.3.1"
