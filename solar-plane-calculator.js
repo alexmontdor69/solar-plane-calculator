@@ -72,7 +72,7 @@ class SolarPlaneCalculator {
                             .map(point=>([[point.x],[point.y],[point.z],[1]])) // refModel being an array of points vector 3x1
                             .map(point=>multiply(matrix,point))
     }
-
+    
     buildRotationMatrix (){
         // console.log ('.. Adjust Solar Plane in function of sun azimuth and elevation')
 
@@ -123,11 +123,14 @@ class SolarPlaneCalculator {
 // __________________________________________________________________________________________________________
 
     getPoints () {
+
         // console.log (`Display ${this.transformedPoints.length} Points`)
         return this.transformedPoints
     }
 
     getPeripheralPointIndexes (){
+
+
         if (this.transformedPoints.length ==0){
                 // console.log ('No transformed Points detected')
                 return []
@@ -148,6 +151,8 @@ class SolarPlaneCalculator {
     }
 
     setSunAzimuth (angle){
+
+
         // console.log (`Set Sun Azimuth`)
         this.sunAzimuth = angle
         this.rotationMatrix=this.buildRotationMatrix ()
@@ -155,6 +160,7 @@ class SolarPlaneCalculator {
     }
 
     setElevation(angle){
+
         // console.log (`Set Sun Elevation`)       
         this.elevation = angle
         this.rotationMatrix=this.buildRotationMatrix ()
@@ -162,12 +168,15 @@ class SolarPlaneCalculator {
     }
 
     getSegments = (model=this.transformedPoints)=>{
+        describe.todo('get Segments')
+
         let segments = this.initSegment.map((points)=>([model[points[0]],model[points[1]]]))  
-        /  console.log (`Display ${segments.length} Segments`)
+        //  console.log (`Display ${segments.length} Segments`)
         return segments
     }
 
-    getRefModel =(unit)=>{
+    getRefModelByUnit =(unit=1)=>{
+
         const max = Math.max(this.model.width, this.model.depth)
         const ratio = unit/max
         //console.log (max,this.model.width, this.model.depth,unit, ratio, this.refModel)
@@ -178,8 +187,18 @@ class SolarPlaneCalculator {
                                         }))
     }
 
-    getRefModelShape =(scale)=>{
-        const refModel = this.getRefModel(scale)
+    getRefModelByRatio =(ratio=1)=>{
+
+        return this.refModel.map(point=>({
+                                            x:point[0][0]*ratio,
+                                            y:point[1][0]*ratio,
+                                            z:point[2][0]*ratio
+                                        }))
+    }
+
+    getRefModelShapeByUnit =(scale)=>{
+
+        const refModel = this.getRefModelByUnit(scale)
         return this.getSegments (refModel)
         
     }
