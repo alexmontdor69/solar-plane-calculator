@@ -75,8 +75,14 @@ __the Class methods__
 - setObjAzimuth : Set the azimuth angle (radian) of the object
 - setSunAzimuth : Set the azimuth angle (radian) of the sun
 - setElevation : Set the elevation angle (radian) of the sun
-- getRefModelShape : Get a scaled X-Y plane shape
+- getRefModelByUnit:Get a scaled X-Y points to a unit (max depth or width)
+- getRefModelByRatio: Get a scaled X-Y points shape by a ratio (1 give the Ref Model reformated)
+- getRefModelShapeByUnit : Get a scaled X-Y plane shape to a unit (max depth or width)
+- getRefModelShapeByRatio :  Get a scaled X-Y plane shape by a ratio (1 give the Ref Model reformated)
 
 __v1.0.3__
 - getRefModel return the z dimension
 - no console.log()
+- Access to refModel is changed. 2 new methods so v1.0.2 is longer working
+. getRefModel is supperseded by getRefModelByUnit and getRefModelByRatio
+. getRefModelShape is supperseded by getRefModelShapeByUnit and getRefModelShapeByRatio
